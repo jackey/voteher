@@ -45,7 +45,7 @@ function init(hers, pages) {
 		res.json(hers);
 	});
 
-	app.get("/", frontRouter);
+	app.post("/", frontRouter);
 
 	app.listen(http_port);
 

@@ -1,0 +1,10 @@
+@charset "utf-8";
+
+.images img{
+	width: 300px;
+	height: 200px;
+}
+
+.vote-btn {
+	text-indent: 100000;
+}

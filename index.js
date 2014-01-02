@@ -41,7 +41,7 @@ function init(hers, pages) {
 
 	app.use(express.static(__dirname + "/public"));
 
-	app.get("/allhere", function (req, res) {
+	app.get("/allher", function (req, res) {
 		res.json(hers);
 	});
 

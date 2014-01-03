@@ -571,14 +571,132 @@
 
 // Load all her at one time
 (function ($) {
-	$(function () {
-		$.ajax({
-			url: "/allher",
-			dataType:"JSON",
-			success: function (status, data) {
-				window.hers = data;
-			}
-		});
-	});
+  $.loadHers = function (cb) {
+    cb || (cb = function () {});
+    $.ajax({
+      url: "/allher",
+      dataType:"JSON",
+      success: function (data ,status) {
+        window.hers = data;
+        cb();
+      }
+    });
+  }
 })(jQuery);
 
+
+function resizeImage(self) {
+  var self = $(self);
+  // image width/height
+  var image = new Image();
+  image.src = $(self).attr("src");
+  var s_width = image.width;
+  var s_height = image.height;
+
+  // container width/height
+  var c_width = $(self).width();
+  var c_height = $(self).height();
+
+  var r = 0;
+  if (c_width / s_width > c_height / s_height) {
+    r = c_width / s_width;
+  }
+  else {
+    r = c_height / s_height;
+  }
+
+  var width = s_width * r;
+  var height = s_height * r;
+
+  $(self).parent().css({
+    "width": c_width,
+    "height": c_height,
+    "position": "relative",
+    "overflow": "hidden"
+  });
+  $(self).css({
+    "width": width,
+    "height": height,
+    "position": "absolute"
+  });
+
+  if (width > c_width) {
+    var left = (width - c_width) /2;
+    $(self).css({
+      "left": -left
+    });
+  }
+  else if (height > c_height) {
+    var top = (height - c_height) /2;
+    $(self).css({
+      "top": -top
+    });
+  }
+}
+
+// init images
+(function ($) {
+  $(function () {
+    var container = $("#content");
+    $.loadHers(function () {
+      var hers = window.hers;
+      if (hers) {
+        var html = "";
+        $.each(hers, function (index, her) {
+          her.cover = her.images[0];
+          html += Mustache.render($("#template-single-her").html(), {her: her, index: index + 1});
+        });
+        container.append(html);
+        $.event.trigger({
+          type: "afterRender"
+        });
+      }
+      else {
+        container.append("Error Happend");
+      }
+    });
+  });
+})(jQuery);
+
+// show images
+(function ($) {
+  $(document).on("afterRender", function () {
+    $(".eye a").click(function (event) {
+      event.preventDefault();
+      var items = $(this).parents(".items");
+      $(".all-images", items).show();
+    });
+
+    $(".all-images .clostbtn").click(function () {
+      $(this).parent().hide();
+    });
+  });
+})(jQuery);
+
+// vote
+(function ($) {
+  $(document).on("afterRender", function () {
+    $("input.vote-btn").click(function () {
+      if ($(this).data("clicked")) {
+        return;
+      }
+      var self = $(this);
+      $(this).data("clicked", true);
+      var items = $(this).parents(".items");
+      var plusBtn = $(".plus_1_notice", items);
+      plusBtn.css({display: "block"});
+      var top = plusBtn.css("top");
+      plusBtn.animate({
+        top: 0,
+      },
+      500,
+      function () {
+        $(this).css({
+          display:"none",
+          top: top
+        });
+        $(self).data("clicked", false);
+      });
+    });
+  });
+})(jQuery);

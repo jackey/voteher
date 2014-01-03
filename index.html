@@ -13,27 +13,37 @@
 </head>
 
 <body>
-    <script id="single-her-template" type="text/template">
-
-    </script>
-
-    <div id="container">
-        <div class="items">
+    <script id="template-single-her" type="text/template">
+        <div class="items items-{{index}}">
             <div class="images">
                 <ul>
-                    <li><img src="http://enjoy.eastday.com/e/20080509/images/03187369.jpg"/></li>
+                    <li><img onload="resizeImage(this)" src="{{her.cover}}"/></li>
                 </ul>
             </div>
+            <div class="eye"><a href="#">Eye</a></div>
             <div class="name">
-                <span>舒淇</span>
+                <span>{{her.name}}</span>
             </div>
-            <div class="btn">
-                <input type="button" class="vote-btn" item-id="1" value="投她一下" />
+            <div class="btn clearfix">
+                <input type="button" class="vote-btn" item-id="{{her.id}}" value="投她一下" />
             </div>
+
+            <div class="all-images" style="display:none">
+                <div class="clostbtn">close</div>
+                <ul>
+                    {{#her.images}}
+                        <li><img src="{{.}}" alt=""></li>
+                    {{/her.images}}
+                </ul>
+            </div>
+
+            <div class="plus_1_notice">+1</div>
         </div>
-        <div class="items"></div>
-        <div class="items"></div>
-        <div class="items"></div>
-        <div class="items"></div>
+    </script>
+
+    <div id="container" class="clearfix">
+        <div id="content" class="clearfix">
+            
+        </div>
     </div>
 </body>

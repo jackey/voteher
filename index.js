@@ -35,6 +35,11 @@ function frontRouter(req, res) {
 	});
 }
 
+// Weibo auth callback
+function authcallbackRouter(req, res) {
+
+}
+
 // setup server
 function init(hers, pages) {
 	var app = express();
@@ -47,6 +52,11 @@ function init(hers, pages) {
 
 	app.post("/", frontRouter);
 	app.get("/", frontRouter);
+
+	app.post("/authcallback", authcallbackRouter);
+	app.get("/authcallback", function (req, res) {
+		res.send("ERROR");
+	});
 
 	app.listen(http_port);
 

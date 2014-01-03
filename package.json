@@ -21,6 +21,7 @@
     "node-uuid": "1.4.0",
     "send": "0.1.0",
     "optimist": "0.6.0",
-    "http-proxy": "0.10.3"
+    "http-proxy": "0.10.3",
+    "weibo": "0.6.10"
   }
 }

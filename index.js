@@ -28,6 +28,9 @@ else {
 
 // Front handler
 function frontRouter(req, res) {
+	if (req.body) {
+		console.log(req.body);
+	}
 	fs.readFile("./index.html", {encoding: "utf8"}, function (err, html) {
 		res.writeHeader(200, {"Content-Type": "text/html"});  
         res.write(html);  
@@ -38,7 +41,10 @@ function frontRouter(req, res) {
 // setup server
 function init(hers, pages) {
 	var app = express();
-
+ 	
+ 	app.use(express.bodyParser());
+ 	app.use(express.cookieParser("voteher"));
+	app.use(express.cookieSession({path: "/", httpOnly: true, maxAge: null, secret: "voteher", key: "votehersess"}));
 	app.use(express.static(__dirname + "/public"));
 
 	app.get("/allher", function (req, res) {

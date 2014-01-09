@@ -16,6 +16,8 @@ var pool = require("mysql").createPool({
 });
 global.mysql = pool;
 
+global.ROOT = __dirname;
+
 var argv = require("optimist").argv;
 
 // Make sure the listen port
@@ -26,8 +28,22 @@ else {
 	var http_port = config["http_port"];
 }
 
+var oldlog = console.log;
+console.log = function () {
+	var data = JSON.stringify(arguments);
+	data += "\r\n";
+	fs.appendFileSync(ROOT + '/.log', data);
+	oldlog.apply(this, arguments);
+}
+
 // Front handler
 function frontRouter(req, res) {
+	if (req.body) {
+		console.log(req.body);
+	}
+	else {
+
+	}
 	fs.readFile("./index.html", {encoding: "utf8"}, function (err, html) {
 		res.writeHeader(200, {"Content-Type": "text/html"});  
         res.write(html);  
@@ -39,6 +55,9 @@ function frontRouter(req, res) {
 function init(hers, pages) {
 	var app = express();
 
+	app.use(express.bodyParser());
+	app.use(express.cookieParser("voteher"));
+	app.use(express.cookieSession({secret: "voteher", key: "voteher"}));
 	app.use(express.static(__dirname + "/public"));
 
 	app.get("/allher", function (req, res) {

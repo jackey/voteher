@@ -50,6 +50,9 @@ function frontRouter(req, res) {
 		req.session.oauth_data = weibo2api.options;
 		res.cookie("auth", "true");
 	}
+	else {
+		res.cookie("auth", "false");
+	}
 	fs.readFile("./index.html", {encoding: "utf8"}, function (err, html) {
 		res.writeHeader(200, {"Content-Type": "text/html"});  
         res.write(html); 

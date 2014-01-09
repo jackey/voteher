@@ -49,13 +49,18 @@
     <script src="http://tjs.sjs.sinajs.cn/t35/apps/opent/js/frames/client.js" language="JavaScript"></script>
 
     <script type="text/javascript">
+        (function ($) {
+            if ($.cookie("auth") <> "true") {
+                App.AuthDialog.show({
+                    client_id : '1470810749',    
+                    redirect_uri : 'http://apps.weibo.com/voteher',    
+                    height: 120,
+                        scope: 'friendships_groups_readm,friendships_groups_write',
+                });
+            }
+        })(jQuery);
         (function () {
-            // App.AuthDialog.show({
-            //     client_id : '1470810749',    
-            //     redirect_uri : 'http://apps.weibo.com/voteher',    
-            //     height: 120,
-            //         scope: 'friendships_groups_readm,friendships_groups_write',
-            // });
+
         })();
     </script>
 </body>

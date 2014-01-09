@@ -44,16 +44,15 @@ console.log = function () {
 
 // Front handler
 function frontRouter(req, res) {
-	if (req.body) {
+	var sess = req.session;
+	if (req.body && req.body["signed_request"]) {
 		weibo2api.parseSignedRequest(req.body["signed_request"]);
-		console.log(weibo2api.options);
-	}
-	else {
-
+		req.session.oauth_data = weibo2api.options;
+		res.cookie("auth", "true");
 	}
 	fs.readFile("./index.html", {encoding: "utf8"}, function (err, html) {
 		res.writeHeader(200, {"Content-Type": "text/html"});  
-        res.write(html);  
+        res.write(html); 
         res.end();
 	});
 }
@@ -64,7 +63,7 @@ function init(hers, pages) {
 
 	app.use(express.bodyParser());
 	app.use(express.cookieParser("voteher"));
-	app.use(express.cookieSession({secret: "voteher", key: "voteher"}));
+	app.use(express.session({secret: "voteher", key: "voteher"}));
 	app.use(express.static(__dirname + "/public"));
 
 	app.get("/allher", function (req, res) {

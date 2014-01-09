@@ -48,6 +48,9 @@ function frontRouter(req, res) {
 	if (req.body && req.body["signed_request"]) {
 		weibo2api.parseSignedRequest(req.body["signed_request"]);
 		req.session.oauth_data = weibo2api.options;
+		if (weibo2api.options["access_token"] == undefined) {
+			res.cookie("auth", "false");
+		}
 		res.cookie("auth", "true");
 	}
 	else {

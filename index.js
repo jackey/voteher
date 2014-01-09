@@ -15,8 +15,14 @@ var pool = require("mysql").createPool({
 	database: config.mysql.database
 });
 global.mysql = pool;
-
 global.ROOT = __dirname;
+
+// weibo client
+var weibo2 = require("./weibo2/lib/weibo2.js");
+var weibo2api = new weibo2["WeiboApi"]({
+	app_key: config.weibo.key,
+	app_secret: config.weibo.secret
+});
 
 var argv = require("optimist").argv;
 
@@ -39,7 +45,8 @@ console.log = function () {
 // Front handler
 function frontRouter(req, res) {
 	if (req.body) {
-		console.log(req.body);
+		weibo2api.parseSignedRequest(req.body["signed_request"]);
+		console.log(weibo2api.options);
 	}
 	else {
 

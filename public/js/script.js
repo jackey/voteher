@@ -788,6 +788,20 @@ function resizeImage(self) {
   });
 })(jQuery);
 
+(function ($) {
+  $.voteher = function (her_id) {
+    $.ajax({
+      url: "/voteher",
+      type: "POST",
+      dataType: "JSON",
+      data: {her_id: her_id},
+      success: function (status, data) {
+        console.log(arguments);
+      }
+    });
+  }
+})(jQuery);
+
 // vote
 (function ($) {
   $(document).on("afterRender", function () {
@@ -795,6 +809,12 @@ function resizeImage(self) {
       if ($(this).data("clicked")) {
         return;
       }
+
+      $.voteher($(this).attr("item-id"));
+
+      var point = $(this).parent(".btn").siblings(".name").children(".name .point");
+      point.text(parseInt(point.text()) + 1);
+
       var self = $(this);
       $(this).data("clicked", true);
       var items = $(this).parents(".items");

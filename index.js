@@ -51,7 +51,9 @@ function frontRouter(req, res) {
 		if (weibo2api.options["access_token"] == undefined) {
 			res.cookie("auth", "false");
 		}
-		res.cookie("auth", "true");
+		else {
+			res.cookie("auth", "true");	
+		}
 	}
 	else {
 		res.cookie("auth", "false");
@@ -78,6 +80,60 @@ function init(hers, pages) {
 
 	app.post("/", frontRouter);
 	app.get("/", frontRouter);
+
+	// voteher
+	app.post("/voteher", function (req, res) {
+		if (req.session.oauth_data && req.session.oauth_data["access_token"]) {
+			var weibo_id = req.session.oauth_data["user_id"];
+			var time = Math.round(new Date().getTime() / 1000);
+			var her_id = req.body["her_id"];
+			var ip = req.headers['x-forwarded-for'] || 
+     					req.connection.remoteAddress || 
+     					req.socket.remoteAddress ||
+     					req.connection.socket.remoteAddress;
+     		if (!her_id) {
+     			return res.send({
+     				success: false,
+     				message: "Her id missed",
+     				data: null
+     			});
+     		}
+     		console.log("start");
+     		mysql.getConnection(function (err, connection) {
+     			if (err) {
+     				console.log(err);
+     			}
+     			else {
+     				console.log('start to query database');
+     				var params =  [her_id, time, ip, weibo_id];
+     				console.log(params);
+     				connection.query("INSERT INTO vote (her_id, time, ip, weibo_id) VALUES (?, ?, ?, ?)" ,params, function (err, result) {
+     					if (err) {
+     						console.log(err);
+     					}
+     					else {
+     						// update vote count
+     						
+     					}
+     					connection.release();
+     				});
+
+     				res.send({
+     					success: true,
+     					message: 'vote success',
+     					data: null
+     				});
+     			}
+     		});
+		}
+		else {
+			res.send({
+				success: false,
+				message: "login please",
+				data: null
+			});
+		}
+	});
 
 	app.listen(http_port);
 

@@ -16,6 +16,20 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `her`
+--
+
+DROP TABLE IF EXISTS `her`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `her` (
+  `her_id` int(13) NOT NULL AUTO_INCREMENT,
+  `point` bigint(20) DEFAULT '1',
+  PRIMARY KEY (`her_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `vote`
 --
 
@@ -24,22 +38,13 @@ DROP TABLE IF EXISTS `vote`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `vote` (
   `vote_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `entity_id` int(11) DEFAULT NULL,
+  `her_id` int(11) DEFAULT NULL,
   `time` int(11) DEFAULT NULL,
   `ip` varchar(45) DEFAULT NULL,
   `weibo_id` varchar(50) DEFAULT '',
   PRIMARY KEY (`vote_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `vote`
---
-
-LOCK TABLES `vote` WRITE;
-/*!40000 ALTER TABLE `vote` DISABLE KEYS */;
-/*!40000 ALTER TABLE `vote` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -50,4 +55,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-01-02 17:32:48
+-- Dump completed on 2014-01-10 19:01:46

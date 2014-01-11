@@ -42,6 +42,16 @@ console.log = function () {
 	oldlog.apply(this, arguments);
 }
 
+// Maybe add lock/free lock feature to prevent other user 
+// change it before me not finished
+function her_point_plusone(her_id) {
+	_.each(hers, function (her, index) {
+		if (her["id"] == her_id) {
+			hers[index]["point"] += 1;
+		}
+	})
+}
+
 // Front handler
 function frontRouter(req, res) {
 <<<<<<< HEAD
@@ -103,14 +113,15 @@ function init(hers, pages) {
      					req.connection.remoteAddress || 
      					req.socket.remoteAddress ||
      					req.connection.socket.remoteAddress;
-     		if (!her_id) {
+     		if (!her_id && !_.isNumber(her_id)) {
      			return res.send({
      				success: false,
      				message: "Her id missed",
      				data: null
      			});
      		}
-     		console.log("start");
+
+     		// After auth user from weibo, we plan to add new vote record
      		mysql.getConnection(function (err, connection) {
      			if (err) {
      				console.log(err);
@@ -124,10 +135,18 @@ function init(hers, pages) {
      						console.log(err);
      					}
      					else {
-     						// update vote count
-     						
+     						// we also need to update record account
+     						params = [
+     							her_id
+     						];
+     						connection.query("UPDATE her set point = point + 1 WHERE her_id = ?", params, function (err, result) {
+								if (err) {
+									console.log(err);
+								}
+								her_point_plusone(her_id);
+     							connection.release();
+     						});
      					}
-     					connection.release();
      				});
 
      				res.send({
@@ -157,7 +176,7 @@ function init(hers, pages) {
 (function (callback) {
 	var dir = __dirname + "/her";
 	fs.readdir(dir, function (err, files) {
-		var hers = global.users = [];
+		var hers = global.hers = [];
 		_.each(files, function  (file) {
 			try {
 				var content = JSON.parse(fs.readFileSync(dir + "/" + file, "utf8"));
@@ -167,6 +186,50 @@ function init(hers, pages) {
 				console.error(file + " json error");
 				process.exit();
 			}
+		});
+		// init her into database
+		mysql.getConnection(function (err, connection) {
+			if (err) {
+				console.log(err);
+			}
+			else {
+				connection.query("SELECT * FROM her", function (err, data) {
+					if (err) {
+						console.log(err);
+					}
+					else {
+						var hersInserting = [];
+						_.each(hers, function (her, index) {
+							var isExist = false;
+							_.each(data, function (herInDB) {
+								if (herInDB["her_id"] == her["id"]) {
+									isExist = true;
+									// update point
+									hers[index]["point"] = herInDB["point"];
+								}
+							});
+							if (!isExist) {
+								// insert new record
+								hersInserting.push([her["id"], 1]);
+							}
+						});
+						var v = '';
+						for (i=0; i < hersInserting.length; i++) {
+							v += '(?,?),';
+						}
+						if (v != '') {
+							v = v.substring(0, v.length - 1);
+							var params = _.flatten(hersInserting);
+							connection.query("INSERT INTO her VALUES " + v, params, function (err) {
+								if (err) {
+									console.log(err);
+								} 
+								connection.release();
+							});
+						}
+					}
+				});
+			} 
 		});
 		callback(hers);
 	});

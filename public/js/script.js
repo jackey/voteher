@@ -779,10 +779,27 @@ function resizeImage(self) {
     $(".eye a").click(function (event) {
       event.preventDefault();
       var items = $(this).parents(".items");
-      $(".all-images", items).show();
+      var allimages = $(".all-images", items).clone();
+      var content = $(items).parent();
+      if (!$("#all-images-com", content).size() > 0) {
+        var allimagesCom = $("<div id='all-images-com'></div>");
+        $(allimagesCom).append(allimages);
+        $(content).append(allimagesCom);
+      }
+      else {
+        allimagesCom = $("#all-images-com", content);
+      }
+      allimagesCom.html(allimages);
+      allimages.show();
+
+      var top = $(window).scrollTop();
+      allimagesCom.css({
+        "margin-left": -parseInt($(allimagesCom).width()) / 2,
+        "margin-top": parseInt(top) + 10
+      });
     });
 
-    $(".all-images .clostbtn").click(function () {
+    $(".all-images .clostbtn").live("click", function () {
       $(this).parent().hide();
     });
   });
@@ -832,6 +849,15 @@ function resizeImage(self) {
         });
         $(self).data("clicked", false);
       });
+    });
+  });
+})(jQuery);
+
+// Scroll pane
+(function  ($) {
+  $(document).on("afterRender", function () {
+    var scrollPane = $("#content").jScrollPane({
+      mouseWheelSpeed: 60
     });
   });
 })(jQuery);

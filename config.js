@@ -9,5 +9,10 @@ module.exports = {
 		"user": "root",
 		"password": "admin",
 		"database": "voteher"
+	},
+	"weibo": {
+		"key": "1470810749",
+		"secret": "da23479ce6d4fa364288770c7c66a7f5",
+		"auth_callback": "http://apps.weibo.com/voteher"
 	}
 }

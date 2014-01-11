@@ -22,7 +22,8 @@
             </div>
             <div class="eye"><a href="#">Eye</a></div>
             <div class="name">
-                <span>{{her.name}}</span>
+                <span class="name">{{her.name}}</span>
+                <span class="point">{{her.point}}</span>
             </div>
             <div class="btn clearfix">
                 <input type="button" class="vote-btn" item-id="{{her.id}}" value="投她一下" />
@@ -49,13 +50,27 @@
     <script src="http://tjs.sjs.sinajs.cn/t35/apps/opent/js/frames/client.js" language="JavaScript"></script>
 
     <script type="text/javascript">
+        (function ($) {
+            if ($.cookie("auth") != "true") {
+                // App.AuthDialog.show({
+                //     client_id : '1470810749',    
+                //     redirect_uri : 'http://apps.weibo.com/voteher',    
+                //     height: 120,
+                //         scope: 'friendships_groups_readm,friendships_groups_write',
+                // });
+            }
+        })(jQuery);
         (function () {
+<<<<<<< HEAD
             // App.AuthDialog.show({
             //     client_id : '1470810749',    
             //     redirect_uri : 'http://apps.weibo.com/voteher',    
             //     height: 120,
             //         scope: 'friendships_groups_readm,friendships_groups_write',
             // });
+=======
+
+>>>>>>> 8ff97aced5c15b9ee352c3f27bc38b4f9119c0c8
         })();
     </script>
 </body>

@@ -124,18 +124,17 @@
 #content {
 	margin-left: auto;
 	margin-right: auto;
-	width: 650px;
 	position: relative;
 	height: 600px;
 }
 
 .images img{
-	width: 300px;
+	width: 360px;
 	height: 400px;
 }
 
 .items {
-	width: 300px;
+	width: 360px;
 	float: left;
 	margin-left: 10px;
 	margin-bottom: 20px;
@@ -183,3 +182,19 @@
 	display: none;
 }
 
+#filter-box {
+	margin-bottom: 5px;
+	width: 750px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#filter-box input {
+	width: 100%;
+	color: #808080;
+	display: block;
+}
+
+#filter-box input.focus {
+	color: #333333;
+}

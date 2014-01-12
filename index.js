@@ -54,10 +54,6 @@ function her_point_plusone(her_id) {
 
 // Front handler
 function frontRouter(req, res) {
-<<<<<<< HEAD
-	if (req.body) {
-		console.log(req.body);
-=======
 	var sess = req.session;
 	if (req.body && req.body["signed_request"]) {
 		weibo2api.parseSignedRequest(req.body["signed_request"]);
@@ -71,8 +67,8 @@ function frontRouter(req, res) {
 	}
 	else {
 		res.cookie("auth", "false");
->>>>>>> 8ff97aced5c15b9ee352c3f27bc38b4f9119c0c8
 	}
+
 	fs.readFile("./index.html", {encoding: "utf8"}, function (err, html) {
 		res.writeHeader(200, {"Content-Type": "text/html"});  
         res.write(html); 
@@ -80,24 +76,82 @@ function frontRouter(req, res) {
 	});
 }
 
+function search_suggestion_from_baidu(keyword, cb) {
+	var Buffer = require('buffer').Buffer;
+	var Iconv = require("iconv").Iconv;
+	cb || (cb = function () {});
+	function parse_return(str) {
+		var seggestions = str["s"];
+		// search all her
+		var match_hers = [];
+		_.each(hers, function (her) {
+			var name = her["name"];
+			_.each(seggestions, function (s) {
+				if (name.indexOf(s) !== -1) {
+					match_hers.push(her);
+				}
+			});
+		});
+		cb(str, match_hers);
+	}
+	var params = {
+		wd: keyword,
+		cb: "parse_return",
+		from: "superpage",
+		t: new Date().getTime()
+	};
+	var url = "suggestion.baidu.com";
+	var path = "/su";
+	var http = require("http");
+	var options = {
+		hostname: url,
+		path: "/su?" + require("querystring").stringify(params),
+		method: "GET",
+	};
+	var req = http.request(options, function (res) {
+
+		var buffers = [];
+		var size = 0;
+		res.on("data", function (chunk) {
+			buffers.push(chunk);
+			size += chunk.length;
+		});
+
+		res.on("end", function () {
+			var buf = new Buffer(size);
+			var pos = 0;
+			for (var i = 0; i < buffers.length; i++) {
+				buffers[i].copy(buf, pos);
+				pos += buffers[i].length;
+			}
+			var iconv = new Iconv("gbk", "utf-8");
+			var data = iconv.convert(buf);
+			eval(data.toString()); 
+		});
+	});
+
+	req.end();
+}
+
 // setup server
 function init(hers, pages) {
 	var app = express();
-<<<<<<< HEAD
- 	
- 	app.use(express.bodyParser());
- 	app.use(express.cookieParser("voteher"));
-	app.use(express.cookieSession({path: "/", httpOnly: true, maxAge: null, secret: "voteher", key: "votehersess"}));
-=======
-
 	app.use(express.bodyParser());
 	app.use(express.cookieParser("voteher"));
 	app.use(express.session({secret: "voteher", key: "voteher"}));
->>>>>>> 8ff97aced5c15b9ee352c3f27bc38b4f9119c0c8
 	app.use(express.static(__dirname + "/public"));
 
 	app.get("/allher", function (req, res) {
-		res.json(hers);
+		var q = req.query['q'];
+		if (typeof(q) == "undefined") {
+			res.json(hers);
+		}
+		else {
+			search_suggestion_from_baidu(q, function (obj, match_hers) {
+				res.json(match_hers);
+			});
+		}
+
 	});
 
 	app.post("/", frontRouter);

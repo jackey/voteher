@@ -861,3 +861,31 @@ function resizeImage(self) {
     });
   });
 })(jQuery);
+
+(function ($) {
+  $.fn.taggleText = function () {
+    console.log("taggleText");
+    var default_val = $(this).val();
+    $(this).attr("default_val", default_val);
+
+    $(this).focus(function () {
+      if ($(this).attr("default_val") == $(this).val()) {
+        $(this).val('');
+        $(this).addClass("focus");
+      }
+    });
+
+    $(this).focusout(function () {
+      if($(this).val() == '' ) {
+        $(this).val($(this).attr("default_val"));
+        $(this).removeClass("focus");
+      }
+    });
+  }
+})(jQuery);
+
+(function ($) {
+  $(document).on("afterRender", function () {
+    $("input").taggleText();
+  });
+})(jQuery);

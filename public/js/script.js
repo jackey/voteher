@@ -686,10 +686,16 @@
 
 // Load all her at one time
 (function ($) {
-  $.loadHers = function (cb) {
+  $.loadHers = function (keyword ,cb) {
+    if (typeof(cb) == "undefined") {
+      cb = keyword;
+      keyword = undefined;
+    }
     cb || (cb = function () {});
+    var url = "/allher";
+    url += ( typeof(keyword) == "undefined" ? "" : "?q="+ keyword);
     $.ajax({
-      url: "/allher",
+      url: url,
       dataType:"JSON",
       success: function (data ,status) {
         window.hers = data;
@@ -751,11 +757,16 @@ function resizeImage(self) {
 
 // init images
 (function ($) {
-  $(function () {
-    var container = $("#content");
-    $.loadHers(function () {
-      var hers = window.hers;
-      if (hers) {
+  $.fn.renderHers = function (hers) {
+    var container = $(this);
+    function render(pass_hers) {
+      if (pass_hers) {
+        var hers = pass_hers;
+      }
+      else {
+        var hers = window.hers;
+      }
+      if (hers&& !pass_hers) {
         var html = "";
         $.each(hers, function (index, her) {
           her.cover = her.images[0];
@@ -766,10 +777,41 @@ function resizeImage(self) {
           type: "afterRender"
         });
       }
+      else if (hers && pass_hers) {
+        var html = "";
+        $.each(hers, function (index, her) {
+          her.cover = her.images[0];
+          html += Mustache.render($("#template-single-her").html(), {her: her, index: index + 1});
+        });
+        if (html.trim() != "") {
+          var parent = $(".items", container).parent();
+          parent.html(html);
+        }
+        else {
+          //TODO:: when no hers return, what we can do ?
+        }
+      }
       else {
         container.append("Error Happend");
       }
-    });
+
+      $.event.trigger({
+        type: "afterRender"
+      });
+    }
+    if (hers) {
+      console.log("Render from passed");
+      render(hers);
+    }
+    else {
+      $.loadHers(function () {
+        render();
+      });
+    }
+  }
+  $(function () {
+    var container = $("#content");
+    container.renderHers();
   });
 })(jQuery);
 
@@ -864,7 +906,6 @@ function resizeImage(self) {
 
 (function ($) {
   $.fn.taggleText = function () {
-    console.log("taggleText");
     var default_val = $(this).val();
     $(this).attr("default_val", default_val);
 
@@ -887,5 +928,20 @@ function resizeImage(self) {
 (function ($) {
   $(document).on("afterRender", function () {
     $("input").taggleText();
+
+    $("input[name='keyword']").bind('input keyup', function(){
+        var self = $(this);
+        var delay = 800;
+
+        clearTimeout(self.data('timer'));
+        self.data('timer', setTimeout(function(){
+            self.removeData('timer');
+            // search by kyeword
+            $.loadHers(self.val(), function () {
+              console.log(window.hers);
+              $("#container").renderHers(window.hers);
+            });
+        }, delay));
+    });
   });
 })(jQuery);

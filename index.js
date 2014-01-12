@@ -83,16 +83,17 @@ function search_suggestion_from_baidu(keyword, cb) {
 	function parse_return(str) {
 		var seggestions = str["s"];
 		// search all her
-		var match_hers = [];
+		var match_hers = {};
 		_.each(hers, function (her) {
 			var name = her["name"];
 			_.each(seggestions, function (s) {
 				if (name.indexOf(s) !== -1) {
-					match_hers.push(her);
+					//match_hers.push(her);
+					match_hers[her["id"]] = her;
 				}
 			});
 		});
-		cb(str, match_hers);
+		cb(str, _.values(match_hers));
 	}
 	var params = {
 		wd: keyword,
@@ -109,7 +110,6 @@ function search_suggestion_from_baidu(keyword, cb) {
 		method: "GET",
 	};
 	var req = http.request(options, function (res) {
-
 		var buffers = [];
 		var size = 0;
 		res.on("data", function (chunk) {
@@ -151,7 +151,6 @@ function init(hers, pages) {
 				res.json(match_hers);
 			});
 		}
-
 	});
 
 	app.post("/", frontRouter);

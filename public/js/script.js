@@ -855,7 +855,7 @@ function resizeImage(self) {
       dataType: "JSON",
       data: {her_id: her_id},
       success: function (status, data) {
-        console.log(arguments);
+        //
       }
     });
   }
@@ -896,13 +896,13 @@ function resizeImage(self) {
 })(jQuery);
 
 // Scroll pane
-(function  ($) {
-  $(document).on("afterRender", function () {
-    var scrollPane = $("#content").jScrollPane({
-      mouseWheelSpeed: 60
-    });
-  });
-})(jQuery);
+//(function  ($) {
+//  $(document).on("afterRender", function () {
+//    var scrollPane = $("#content").jScrollPane({
+//      mouseWheelSpeed: 60
+//    });
+//  });
+//})(jQuery);
 
 (function ($) {
   $.fn.taggleText = function () {

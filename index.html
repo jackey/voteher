@@ -9,7 +9,7 @@
     <script type="text/javascript" src="/js/jquery.js"></script>
     <script type="text/javascript" src="/js/jquery.mousewheel.js"></script>
     <script type="text/javascript" src="/js/mwheelIntent.js"></script>
-    <script type="text/javascript" src="/js/jquery.jscrollpane.min.js"></script>
+<!--    <script type="text/javascript" src="/js/jquery.jscrollpane.min.js"></script>-->
     <script type="text/javascript" src="/js/script.js"></script>
     
     <title>Vote Her</title>
@@ -23,7 +23,7 @@
                     <li><img onload="resizeImage(this)" src="{{her.cover}}"/></li>
                 </ul>
             </div>
-            <div class="eye"><a href="#">Eye</a></div>
+            
             <div class="name">
                 <span class="name">{{her.name}}</span>
                 <span class="point">{{her.point}}</span>
@@ -48,10 +48,19 @@
     <div id="container" class="clearfix">
         <div id="filter-box">
             <form action="">
-                <div class="item">
-                    <label for="">搜索:</label>
+<!--                <div class="item">
+                    <label for="keyword">搜索:</label>
                     <input type="text" name="keyword" value="她的中文名字或拼音">
-                </div>
+                </div>-->
+<!--              <div class="item filter">
+                <input type="checkbox" name="vote_most" />
+                <label for="vote_most">投票最多</label>
+              </div>
+              <div class="item filter">
+                <input type="checkbox" name="vote_most" />
+                <label for="vote_most">粉丝最多</label>
+              </div>-->
+              
             </form>
         </div>
         <div id="content" class="clearfix">

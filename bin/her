@@ -14,7 +14,7 @@ def last_her_id():
     max_her_id = 1
     paths = os.listdir(her_dir)
     for path in paths:
-      her_id = path.split(".")[0].strip()
+      her_id = int(path.split(".")[0].strip())
       if her_id > max_her_id:
         max_her_id = her_id
   return int(max_her_id) + 1

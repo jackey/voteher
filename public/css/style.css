@@ -150,7 +150,7 @@
     text-indent: 100000px;
     overflow: hidden;
     width: 54px;
-    height: 60px;
+    height: 56px;
     border: 0px;
     display: inline-block;
     float: right;
@@ -184,6 +184,10 @@
 	top: 260px;
 	background: #fff;
 	display: none;
+        background: url(../misc/heart.png) no-repeat 0 0;
+        width: 33px;
+        height: 30px;
+        text-indent: 100000000px;
 }
 
 #filter-box {

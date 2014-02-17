@@ -149,12 +149,12 @@
 .items .vote-btn {
     text-indent: 100000px;
     overflow: hidden;
-    width: 80px;
-    height: 40px;
-    border-radius: 13px;
+    width: 54px;
+    height: 60px;
+    border: 0px;
     display: inline-block;
     float: right;
-    background-image: url(../misc/like.png);
+    background: url(../misc/good.png) no-repeat 0 0;
 }
 
 .items .name {

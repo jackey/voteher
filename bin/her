@@ -2,6 +2,7 @@
 import sys
 import os, os.path
 import json
+import requests
 
 basepath = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
@@ -19,25 +20,73 @@ def last_her_id():
         max_her_id = her_id
   return int(max_her_id) + 1
 
+def save_image(her_id):
+  pass
+
 def new_her(name, images):
   new_her_id = last_her_id()
   her = {"name": name, "images": images, "point": 1, "id": new_her_id}
+
+  for image in images:
+    image_index = images.index(image)
+    r = requests.get(image, stream=True)
+    image_path = os.path.join(basepath, "public/images", str(new_her_id) + ".jpg")
+    with open(image_path, "wb") as f:
+      for chunk in r.iter_content(chunk_size=1024):
+        f.write(chunk)
+        f.flush()
+    images[image_index] = os.path.join("/public/images", str(new_her_id) + ".jpg")
+
+  her["images"] = images
+
   her_json = json.dumps(her)
-  
   her_dir = os.path.join(basepath, "her")
   with open(os.path.join(her_dir, str(new_her_id) + ".json"), "w+") as her_file:
     her_file.write(her_json)
   return True
+
+def del_her(name):
+  name = name.decode("utf8")
+  if name == "*":
+    for f_her in os.listdir(os.path.join(basepath, "her")):
+        os.remove(os.path.join(basepath, "her", f_her))
+  else:
+    for f_her in os.listdir(os.path.join(basepath, "her")):
+      with open(os.path.join(basepath, "her", f_her)) as f_her_content:
+        her_json =  json.loads(f_her_content.read())
+        try:
+          if her_json["name"].find(name) == 0:
+            print "Deleting %s !"  %(name)
+            os.remove(os.path.join(basepath, "her", f_her))
+        except:
+          print "Exception"
+
   
 if __name__ == "__main__":
-  name = raw_input("Name: ")
-  images = []
-  while True:
-    image = raw_input("Image: ")
-    if image == "":
-      break
-    images.append(image)
-    
-  print "Begin to add new her"
-  new_her(name, images)
-  print "Added new her named [%s]" %(name)
+  if len(sys.argv) == 1:
+    name = raw_input("Name: ")
+    images = []
+    while True:
+      image = raw_input("Image: ")
+      if image == "":
+        break
+      images.append(image)
+      
+    print "Begin to add new her"
+    new_her(name, images)
+    print "Added new her named [%s]" %(name)
+
+  else:
+    if (sys.argv[1] == "-d" or sys.argv[1] == "--delete" ) and len(sys.argv) == 3:
+      name = sys.argv[2]
+      if name == "*":
+        del_her(name)
+      else:
+        del_her(name)
+        print "%s has been deleted !" %(name)
+    else:
+      print "Delete : her -d/--delete her_name"
+  
+
+
+
